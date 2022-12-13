@@ -184,7 +184,9 @@ void Graph::construct() {
     start = clock();
 
     for (int i = 1; i <= n; i++) {
-        cout << "construct for vertex i = " << i << endl;
+        clock_t start_i, end_i;
+        start_i = clock();
+        cout << "construct for vertex i = " << i;
         Q.push(Quad(i,0,-1,-1));
         construct_for_a_vertex(graph, in_label, i, false);
 
@@ -192,12 +194,16 @@ void Graph::construct() {
             Q.push(Quad(i,0,-1,-1));
             construct_for_a_vertex(r_graph, out_label, i, true);
         }
+        end_i = clock();
+        cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
         //cout << ", finished!" << endl;
     }
-
+    \
     end = clock();
     cout << "build index: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
 }
+
+
 void Graph::construct_for_a_vertex(vector<vector<Edge> > &g, vector<vector<Label> > &label, int u, bool reverse) {
     //int i = 0;
     while (!Q.empty()) {

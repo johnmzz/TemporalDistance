@@ -13,5 +13,5 @@ int main(int argc, char * argv[]) {
     //graph.test_correctness();
 
     graph.calculate_index_size();
-    graph.print_labels();
+    //graph.print_labels();
 }
