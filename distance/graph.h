@@ -19,11 +19,18 @@
 using namespace std;
 
 struct Edge {
+    int u;
+    int v;
+    int d;
+    int t;
+    Edge(int _u, int _v, int _d, int _t) : u(_u), v(_v), d(_d), t(_t) {};
+};
+
+struct Neighbor {
     int v;
     int t;
     int d;
-    //Edge *last, *next;
-    Edge(int _v, int _t, int _d): v(_v), t(_t), d(_d) {};
+    Neighbor(int _v, int _d, int _t): v(_v), d(_d), t(_t) {};
 };
 
 // Index label entries
@@ -59,17 +66,20 @@ class Graph {
     // directed or undirected graph
     bool directed;
 
+    // edge list (ordered by time)
+    vector<Edge> edges;
+
     // graph and reversed graph
-    vector<vector<Edge> > graph;
-    vector<vector<Edge> > r_graph;
+    vector<vector<Neighbor> > graph;
+    vector<vector<Neighbor> > r_graph;
 
     // in-degree and out-degree
     vector<int> in_degree;
     vector<int> out_degree;
 
-    // map original ID -> new ID based on appearance
-    map<int, int> vmap_org_new;
-    map<int, int> vmap_new_org;
+    // vertex ID <-> vertex order (based on degree)
+    vector<int> ID_order;
+    vector<int> order_ID;
 
     // index
     vector<map<int, vector<Label>>> in_label;
@@ -79,16 +89,18 @@ class Graph {
     priority_queue<Quad> Q;
 
     Graph(string graph_file, string directed);
-    void sort_by_degree(vector<vector<Edge> > &g);
+    void sort_by_degree(vector<vector<Neighbor> > &g);
 
     // display
     void print_graph();
     void print_r_graph();
     void print_labels();
+    void print_edge_list();
+    void print_vertex_order();
 
     // index construction
     void construct();
-    void construct_for_a_vertex(vector<vector<Edge> > &g, vector<map<int, vector<Label>>> &label, int u, bool reverse);
+    void construct_for_a_vertex(vector<vector<Neighbor> > &g, vector<map<int, vector<Label>>> &label, int u, bool reverse);
     void add_label(vector<map<int, vector<Label>>> &label, int u, int v, int d, int t1, int t2);
 
     // query
@@ -101,4 +113,7 @@ class Graph {
     // tests
     void test_correctness();
     void calculate_index_size();
+
+    // landmark index
+    void construct_landmark();
 };

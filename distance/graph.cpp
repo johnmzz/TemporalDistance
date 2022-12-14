@@ -24,48 +24,48 @@ Graph::Graph(string input_file, string _directed) {
         cout << "Cannot open " << input_file << ".txt" << endl;
         exit(0);
     }
-    int u, v, t, d;
-    while (fin >> u >> v >> t >> d) {
+    int u, v, d, t;
+    while (fin >> u >> v >> d >> t) {
         n = max(u,n);
         n = max(v,n);
-        t_min = min(t, t_min);
-        t_max = max(t, t_max);
         d_min = min(d, d_min);
         d_max = max(d, d_max);
+        t_min = min(t, t_min);
+        t_max = max(t, t_max);
         m++;
     }
     fin.close();
 
     // initialize adj_list, degree
-    graph = vector<vector<Edge> >(n+1, vector<Edge>());
+    graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
     out_degree = vector<int>(n+1);
     if (directed) {
-        r_graph = vector<vector<Edge> >(n+1, vector<Edge>());
+        r_graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
         in_degree = vector<int>(n+1);
     }
+    ID_order = vector<int>(n+1);
+    order_ID = vector<int>(n+1);
 
     // read graph
     fin.open("./data/" + input_file + ".txt");
-    while (fin >> u >> v >> t >> d) {
-        graph[u].push_back(Edge(v, t, d));
+    while (fin >> u >> v >> d >> t) {
+        graph[u].push_back(Neighbor(v, d, t));
         out_degree[u]++;
 
         if (directed) {
-            r_graph[v].push_back(Edge(u, t, d));
+            r_graph[v].push_back(Neighbor(u, d, t));
             in_degree[v]++;
         }
         else {
-            graph[v].push_back(Edge(u, t, d));
+            graph[v].push_back(Neighbor(u, d, t));
             out_degree[v]++;
         }
+
+        edges.push_back(Edge(u, v, d, t));
     }
     if (!directed) in_degree = out_degree;
     
     sort_by_degree(graph);
-    sort_by_degree(r_graph);
-
-    //print_graph();
-    //print_r_graph();
 
     // initialize index
     in_label = vector<map<int,vector<Label>>>(n+1, map<int, vector<Label> >());
@@ -74,29 +74,35 @@ Graph::Graph(string input_file, string _directed) {
     cout << "Graph contructed, n = " << n << ", m = " << m << ", d_max = " << d_max << ", t_max = " << t_max << endl;
 }
 
-void Graph::sort_by_degree(vector<vector<Edge> > &g) {
+void Graph::sort_by_degree(vector<vector<Neighbor> > &g) {
     vector<pair<int, int>> v_degree_ordered(g.size());
     for (uint32_t i = 1; i < g.size(); i++) {
         v_degree_ordered[i] = make_pair(i, (in_degree[i] + 1) * (out_degree[i] + 1));
     }
     std::sort(v_degree_ordered.begin(), v_degree_ordered.end(), [](auto &left, auto &right) {return left.second > right.second;});
 
-    vector<int> offset(g.size());
-    for (int i = 0; i < g.size(); i++) {
-        offset[v_degree_ordered[i].first] = i+1;
+    for (int i = 0; i < v_degree_ordered.size(); i++) {
+        auto v = v_degree_ordered[i];
+        ID_order[v.first] = i+1;
+        order_ID[i+1] = v.first;
     }
 
-    vector<vector<Edge> > new_graph = vector<vector<Edge> > (n+1, vector<Edge>());
-    for (int i = 1; i <= n; i++) {
-        int u = v_degree_ordered[i-1].first;
-        for (int j = 0; j < g[u].size(); j++) {
-            int v = offset[g[u][j].v];
-            int d = g[u][j].d;
-            int t = g[u][j].t;
-            new_graph[i].push_back(Edge(v,t,d));
-        }
-    }
-    g = new_graph;
+    // vector<int> offset(g.size());
+    // for (int i = 0; i < g.size(); i++) {
+    //     offset[v_degree_ordered[i].first] = i+1;
+    // }
+
+    // vector<vector<Neighbor> > new_graph = vector<vector<Neighbor> > (n+1, vector<Neighbor>());
+    // for (int i = 1; i <= n; i++) {
+    //     int u = v_degree_ordered[i-1].first;
+    //     for (int j = 0; j < g[u].size(); j++) {
+    //         int v = offset[g[u][j].v];
+    //         int d = g[u][j].d;
+    //         int t = g[u][j].t;
+    //         new_graph[i].push_back(Neighbor(v,t,d));
+    //     }
+    // }
+    // g = new_graph;
 }
 
 void Graph::print_graph() {
@@ -119,6 +125,23 @@ void Graph::print_r_graph() {
     }
 }
 
+void Graph::print_edge_list() {
+    for (auto e : edges) {
+        cout << "(" << e.u << "," << e.v << "," << e.d << "," << e.t << ")" << endl;
+    }
+}
+
+void Graph::print_vertex_order() {
+    cout << "ID_order = " << endl;
+    for (int i = 1; i < ID_order.size(); i++) {
+        cout << "original ID = " << i << ", vertex order = " << ID_order[i] << endl;
+    }
+    cout << "order_ID = " << endl;
+    for (int i = 1; i < order_ID.size(); i++) {
+        cout << "vertex order = " << i << ", original ID = " << order_ID[i] << endl;
+    }
+}
+
 void Graph::print_labels() {
     cout << "out_label = " << endl;
     for (int i = 0; i < out_label.size(); i++){
@@ -128,7 +151,7 @@ void Graph::print_labels() {
             for (auto label : it->second) {
                 cout << "(" << label.d << "," << label.t1 << "," << label.t2 << "), ";
             }
-            cout << "}, ";
+            cout << "]}, ";
         }
         cout << "]," << endl;
     }
@@ -141,7 +164,7 @@ void Graph::print_labels() {
             for (auto label : it->second) {
                 cout << "(" << label.d << "," << label.t1 << "," << label.t2 << "), ";
             }
-            cout << "}, ";
+            cout << "]}, ";
         }
         cout << "]," << endl;
     }
@@ -189,16 +212,19 @@ void Graph::construct() {
     clock_t start, end;
     start = clock();
 
+    // TODO: construct new Q every time
     for (int i = 1; i <= n; i++) {
         clock_t start_i, end_i;
         start_i = clock();
-        cout << "construct for vertex i = " << i;
-        Q.push(Quad(i,0,-1,-1));
-        construct_for_a_vertex(graph, in_label, i, false);
+
+        int u = order_ID[i];
+        cout << "construct for vertex u = " << u << ", order i = " << i;
+        Q.push(Quad(u,0,-1,-1));
+        construct_for_a_vertex(graph, in_label, u, false);
 
         if (directed) {
-            Q.push(Quad(i,0,-1,-1));
-            construct_for_a_vertex(r_graph, out_label, i, true);
+            Q.push(Quad(u,0,-1,-1));
+            construct_for_a_vertex(r_graph, out_label, u, true);
         }
         end_i = clock();
         cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
@@ -209,7 +235,7 @@ void Graph::construct() {
     cout << "build index: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
 }
 
-void Graph::construct_for_a_vertex(vector<vector<Edge> > &g, vector<map<int,vector<Label>>> &label, int u, bool reverse) {
+void Graph::construct_for_a_vertex(vector<vector<Neighbor> > &g, vector<map<int,vector<Label>>> &label, int u, bool reverse) {
     //int i = 0;
     while (!Q.empty()) {
         Quad quad = Q.top();
@@ -225,8 +251,8 @@ void Graph::construct_for_a_vertex(vector<vector<Edge> > &g, vector<map<int,vect
                 //cout << i << " add label: L(" << v << ") += (u=" << u << ", d=" << quad.d << ", t1=" << quad.t1 << ", t2=" << quad.t2 << ")" << endl;
             }
         }
-        for (Edge e : g[v]) { 
-            if (u < e.v) {
+        for (Neighbor e : g[v]) { 
+            if (ID_order[u] < ID_order[e.v]) {
                 int _t1 = (quad.t1 == -1? e.t : min(quad.t1, e.t));
                 int _t2 = (quad.t2 == -1? e.t : max(quad.t2, e.t));
                 int _d = quad.d + e.d;
@@ -289,7 +315,8 @@ void Graph::test_correctness() {
                     int query = span_distance(u,v,ts,te);
                     int online = temporal_dijkstra(u,v,ts,te);
                     if (query != online) {
-                        cout << "Incorrect query = " << query << ", online = " << online << endl;
+                        cout << "u = " << u << ", v = " << v << ",ts = " << ts << ", te = " << te
+                        << ", Incorrect query = " << query << ", online = " << online << endl;
                     }
                 }
             }
@@ -320,3 +347,28 @@ void Graph::calculate_index_size() {
 
     cout << "num_label = " << num_label << endl;
 }
+
+// void Graph::construct_landmark(){
+//     clock_t start, end;
+//     start = clock();
+
+//     for (int i = 1; i <= n/10; i++) {
+//         clock_t start_i, end_i;
+//         start_i = clock();
+
+//         cout << "construct for vertex i = " << i;
+//         Q.push(Quad(i,0,-1,-1));
+//         construct_for_a_vertex(graph, in_label, i, false);
+
+//         if (directed) {
+//             Q.push(Quad(i,0,-1,-1));
+//             construct_for_a_vertex(r_graph, out_label, i, true);
+//         }
+//         end_i = clock();
+//         cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
+//         //cout << ", finished!" << endl;
+//     }
+
+//     end = clock();
+//     cout << "build index: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
+// }
