@@ -15,6 +15,7 @@
 #include <numeric>
 #include <climits>
 #include <chrono>
+#include <unordered_map>
 
 using namespace std;
 
@@ -53,7 +54,7 @@ struct Quad {
     int t2;
     Quad(int _v, int _d, int _t1, int _t2): v(_v), d(_d), t1(_t1), t2(_t2){};
     
-    bool operator< (const Quad &x) const {
+    bool operator< (const Quad &x) const {  // In Priority Queue, order by d, then te-ts, then v (all in increasing order)
         return (d > x.d) || (d == x.d && t2 - t1 > x.t2 - x.t1) || (d == x.d && t2 - t1 == x.t2 - x.t1 && v > x.v);
     }
 };
@@ -61,7 +62,7 @@ struct Quad {
 class Graph {
   public:
     // number of vertices and number of edges
-    int n, m, t_min, t_max, d_min, d_max;
+    int n, m, t_min, t_max, d_min, d_max, landmark;
 
     // directed or undirected graph
     bool directed;
@@ -87,6 +88,10 @@ class Graph {
 
     // index construction
     priority_queue<Quad> Q;
+    unordered_map<int, vector<Edge>> P;
+
+    // landmark index
+    vector<vector<vector<Label>>> index;
 
     Graph(string graph_file, string directed);
     void sort_by_degree(vector<vector<Neighbor> > &g);
@@ -97,6 +102,7 @@ class Graph {
     void print_labels();
     void print_edge_list();
     void print_vertex_order();
+    void print_index();
 
     // index construction
     void construct();
@@ -105,6 +111,7 @@ class Graph {
 
     // query
     int span_distance(int u, int v, int t1, int t2);
+    int span_distance_landmark(int u, int v, int t1, int t2);
 
     // online
     int temporal_dijkstra(int u, int v, int t1, int t2);
@@ -113,7 +120,11 @@ class Graph {
     // tests
     void test_correctness();
     void calculate_index_size();
+    void test_landmark_correctness();
 
     // landmark index
+    void set_landmark(string input_file);
     void construct_landmark();
+    void construct_for_a_vertex_landmark(int u);
+    void add_label_landmark(int u, int v, int d, int t1, int t2);
 };

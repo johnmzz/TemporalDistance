@@ -7,6 +7,8 @@ Graph::Graph(string input_file, string _directed) {
     d_max = 0;
     t_min = INT_MAX;
     t_max = 0;
+
+    set_landmark(input_file);
     
     // directed or undirected
     if (_directed == "U") 
@@ -70,6 +72,7 @@ Graph::Graph(string input_file, string _directed) {
     // initialize index
     in_label = vector<map<int,vector<Label>>>(n+1, map<int, vector<Label> >());
     out_label = vector<map<int,vector<Label>>>(n+1, map<int, vector<Label> >());
+    index = vector<vector<vector<Label>>>(n+1, vector<vector<Label>>(n+1, vector<Label>()));
 
     cout << "Graph contructed, n = " << n << ", m = " << m << ", d_max = " << d_max << ", t_max = " << t_max << endl;
 }
@@ -348,27 +351,111 @@ void Graph::calculate_index_size() {
     cout << "num_label = " << num_label << endl;
 }
 
-// void Graph::construct_landmark(){
-//     clock_t start, end;
-//     start = clock();
+void Graph::set_landmark(string file) {
+    if (file == "graph") landmark = 6;
+    if (file == "synthetic_100") landmark = 10;
+    if (file == "CollegeMsg_1") landmark = 100;
+}
 
-//     for (int i = 1; i <= n/10; i++) {
-//         clock_t start_i, end_i;
-//         start_i = clock();
+int Graph::span_distance_landmark(int u, int v, int t1, int t2) {
+    if (u == v) return 0;
+    int min_distance = INT_MAX;
 
-//         cout << "construct for vertex i = " << i;
-//         Q.push(Quad(i,0,-1,-1));
-//         construct_for_a_vertex(graph, in_label, i, false);
+    for (auto label: index[u][v]) {
+        if (t1 <= label.t1 && label.t2 <= t2) {
+            if (label.d < min_distance) {
+                min_distance = label.d;
+            }
+        }
+    }
+    return min_distance;
+}
 
-//         if (directed) {
-//             Q.push(Quad(i,0,-1,-1));
-//             construct_for_a_vertex(r_graph, out_label, i, true);
-//         }
-//         end_i = clock();
-//         cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
-//         //cout << ", finished!" << endl;
-//     }
+void Graph::construct_landmark(){
+    clock_t start, end;
+    start = clock();
 
-//     end = clock();
-//     cout << "build index: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
-// }
+    for (int i = 1; i <= landmark; i++) {
+        clock_t start_i, end_i;
+        start_i = clock();
+
+        int u = order_ID[i];
+        cout << "construct for vertex u = " << u << ", order i = " << i;
+        Q.push(Quad(u,0,-1,-1));
+        construct_for_a_vertex_landmark(u);
+        
+        end_i = clock();
+        cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
+    }
+    end = clock();
+    cout << "build index: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
+}
+
+void Graph::construct_for_a_vertex_landmark(int u) {
+    //int i = 0;
+    while (!Q.empty()) {
+        Quad quad = Q.top();
+        //cout << i << " pop: (v=" << quad.v << ", d=" << quad.d << ", t1=" << quad.t1 << ", t2=" << quad.t2 << ")" << endl;
+        Q.pop();
+        int v = quad.v;
+        if (u != v) {
+            if (span_distance_landmark(u, v, quad.t1, quad.t2) <= quad.d) {
+                continue;
+            }
+            else {
+                add_label_landmark(u, v, quad.d, quad.t1, quad.t2);
+                //cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << quad.d << "," << quad.t1 << "," << quad.t2 << ")" << endl; 
+            }
+        }
+        for (Neighbor e : graph[v]) {
+            int _t1 = (quad.t1 == -1? e.t : min(quad.t1, e.t));
+            int _t2 = (quad.t2 == -1? e.t : max(quad.t2, e.t));
+            int _d = quad.d + e.d;
+
+            // if use max_d_from_u[v], then need to specify (v, t1, t2), maybe use nested hash
+            Q.push(Quad(e.v, _d, _t1, _t2));
+            //cout << i << " push: (v=" << e.v << ", d=" << _d << ", t1=" << _t1 << ", t2=" << _t2 << ")" << endl;
+        }
+        //i++;
+        //cout << endl;
+    }
+}
+
+void Graph::add_label_landmark(int u, int v, int d, int t1, int t2) {
+    index[u][v].push_back(Label(d,t1,t2));
+}
+
+void Graph::print_index() {
+    cout << "Index = " << endl;
+    for (int i = 1; i < index.size(); i++) {
+        cout << i << ": {";
+        for (int j = 1; j < index[i].size(); j++) {
+            cout << j << ":[";
+            for (auto label: index[i][j]) {
+                cout << "(" << label.d << "," << label.t1 << "," << label.t2 << "),";
+            }
+            cout << "], ";
+        }
+        cout << "}" << endl;
+    }
+}
+
+void Graph::test_landmark_correctness() {
+    cout << "testing corrrectness..." << endl;
+    for (int i = 1; i <= landmark; i++) {
+        for (int j = 1; j <= landmark; j++) {
+            for (int ts = t_min; ts <= t_max; ts++) {
+                for (int te = t_min; te <= t_max; te++) {
+                    int u = order_ID[i];
+                    int v = order_ID[j];
+                    int query = span_distance_landmark(u,v,ts,te);
+                    int online = temporal_dijkstra(u,v,ts,te);
+                    if (query != online) {
+                        cout << "u = " << u << ", v = " << v << ",ts = " << ts << ", te = " << te
+                        << ", Incorrect query = " << query << ", online = " << online << endl;
+                    }
+                }
+            }
+        }
+    }
+}
