@@ -359,16 +359,13 @@ void Graph::set_landmark(string file) {
 
 int Graph::span_distance_landmark(int u, int v, int t1, int t2) {
     if (u == v) return 0;
-    int min_distance = INT_MAX;
 
     for (auto label: index[u][v]) {
         if (t1 <= label.t1 && label.t2 <= t2) {
-            if (label.d < min_distance) {
-                min_distance = label.d;
-            }
+            return label.d;
         }
     }
-    return min_distance;
+    return INT_MAX;
 }
 
 void Graph::construct_landmark(){
@@ -380,10 +377,10 @@ void Graph::construct_landmark(){
         start_i = clock();
 
         int u = order_ID[i];
-        cout << "construct for vertex u = " << u << ", order i = " << i;
+        cout << "construct for vertex u = " << u << ", order i = " << i << endl;
         Q.push(Quad(u,0,-1,-1));
         construct_for_a_vertex_landmark(u);
-        
+
         end_i = clock();
         cout << ", time taken = " << (float)(end_i - start_i) / CLOCKS_PER_SEC << endl;
     }

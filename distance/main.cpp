@@ -17,5 +17,5 @@ int main(int argc, char * argv[]) {
         cout << "Incorrect method!" << endl;
 
     //graph.print_index();
-    //raph.test_landmark_correctness();
+    //graph.test_landmark_correctness();
 }
