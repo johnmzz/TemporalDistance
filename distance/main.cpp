@@ -19,5 +19,5 @@ int main(int argc, char * argv[]) {
     graph.calculate_landmark_size();
 
     //graph.print_index();
-    graph.test_landmark_correctness();
+    //graph.test_landmark_correctness();
 }
