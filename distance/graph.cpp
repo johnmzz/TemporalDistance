@@ -456,3 +456,17 @@ void Graph::test_landmark_correctness() {
         }
     }
 }
+
+void Graph::calculate_landmark_size() {
+    int num_label = 0;
+
+    for (int i = 0; i < index.size(); i++) {
+        for (int j = 0; j < index[i].size(); j++) {
+            for (auto label : index[i][j]) {
+                num_label++;
+            }
+        }
+    }
+
+    cout << "num_labels = " << num_label << ", size = num_labels * 3 * 4 = " << num_label * 3 * sizeof(int) << endl;
+}

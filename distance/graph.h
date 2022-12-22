@@ -120,6 +120,7 @@ class Graph {
     // tests
     void test_correctness();
     void calculate_index_size();
+    void calculate_landmark_size();
     void test_landmark_correctness();
 
     // landmark index

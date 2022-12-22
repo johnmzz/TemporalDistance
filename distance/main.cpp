@@ -16,6 +16,8 @@ int main(int argc, char * argv[]) {
     else
         cout << "Incorrect method!" << endl;
 
+    graph.calculate_landmark_size();
+
     //graph.print_index();
-    //graph.test_landmark_correctness();
+    graph.test_landmark_correctness();
 }
