@@ -355,7 +355,7 @@ void Graph::set_landmark(string file) {
     if (file == "graph") landmark = 6;
     if (file == "synthetic_100") landmark = 10;
     if (file == "CollegeMsg_1") landmark = 100;
-    if (file == "email") landmark = 50;
+    if (file == "email_1") landmark = 50;
 }
 
 int Graph::span_distance_landmark(int u, int v, int t1, int t2) {
