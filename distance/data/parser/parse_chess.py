@@ -13,7 +13,7 @@ def parse(name):
 
         u = lst[0]
         v = lst[1]
-        d = int(lst[2])
+        d = int(lst[2]) + 2
         t = int(float(lst[3]))
 
         edge = [t, u, v, d]
