@@ -16,7 +16,7 @@ def parse(name, data):
 
         u = lst[0]
         v = lst[1]
-        t = int(lst[2])
+        t = int(lst[3])
         t_min = min(t_min, t)
         t_max = max(t_max, t)
 
@@ -34,7 +34,7 @@ def parse(name, data):
 
 data = {"CollegeMsg": 86715,
         "email": 86499,
-        "slashdot": 1,
+        "slashdot": 11573616,
         }
 
 parse("slashdot", data)

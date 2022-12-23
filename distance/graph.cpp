@@ -49,6 +49,7 @@ Graph::Graph(string input_file, string _directed) {
     order_ID = vector<int>(n+1);
 
     // read graph
+    cout << "reading graph..." << endl;
     fin.open("./data/" + input_file + ".txt");
     while (fin >> u >> v >> d >> t) {
         graph[u].push_back(Neighbor(v, d, t));
@@ -357,6 +358,7 @@ void Graph::set_landmark(string file) {
     if (file == "CollegeMsg_1") landmark = 100;
     if (file == "email_1") landmark = 50;
     if (file == "chess_2") landmark = 300;
+    if (file == "slashdot_1") landmark = 1000;
 }
 
 int Graph::span_distance_landmark(int u, int v, int t1, int t2) {
