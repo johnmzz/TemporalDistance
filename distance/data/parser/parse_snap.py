@@ -34,7 +34,7 @@ def parse(name, data):
 
 data = {"CollegeMsg": 86715,
         "email": 86499,
-        "slashdot": 1,
+        "mathoverflow": 86412,
         }
 
-parse("slashdot", data)
+parse("mathoverflow", data)
