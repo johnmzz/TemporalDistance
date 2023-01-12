@@ -37,42 +37,39 @@ struct Neighbor {
 // Index label entries
 struct Label {
     int d;
-    int t1;
-    int t2;
-    Label(int _d, int _t1, int _t2): d(_d), t1(_t1), t2(_t2){};
-    
+    int t;
+    Label(int _d, int _t): d(_d), t(_t) {};
+
     bool operator< (const Label &x) const {
         return d < x.d;
     }
 };
 
-// Quadruplet in priority queue Q
-struct Quad {
+// Triplet in priority queue Q
+struct Triplet {
     int v;
     int d;
-    int t1;
-    int t2;
-    Quad(int _v, int _d, int _t1, int _t2): v(_v), d(_d), t1(_t1), t2(_t2){};
-    
-    bool operator< (const Quad &x) const {  // In Priority Queue, order by d, then te-ts, then v (all in increasing order)
-        return (d > x.d) || (d == x.d && t2 - t1 > x.t2 - x.t1) || (d == x.d && t2 - t1 == x.t2 - x.t1 && v > x.v);
+    int t;
+    Triplet(int _v, int _d, int _t): v(_v), d(_d), t(_t) {};
+
+    bool operator< (const Triplet &x) const {   // order by smallest d, then latest t
+        return (d > x.d) || (d == x.d && t < x.t) || (d == x.d && t == x.t && v > x.v);
     }
 };
 
-class Graph {
+class Graph{
   public:
-    // number of vertices and number of edges
     int n, m, t_min, t_max, d_min, d_max, landmark;
 
-    // directed or undirected graph
+    // directed or undirected
     bool directed;
 
     // edge list (ordered by time)
     vector<Edge> edges;
 
-    // graph and reversed graph
-    vector<vector<Neighbor> > graph;
-    vector<vector<Neighbor> > r_graph;
+    // graph
+    vector<vector<Neighbor>> graph;
+    vector<vector<Neighbor>> r_graph;
 
     // in-degree and out-degree
     vector<int> in_degree;
@@ -82,50 +79,35 @@ class Graph {
     vector<int> ID_order;
     vector<int> order_ID;
 
-    // index
-    vector<map<int, vector<Label>>> in_label;
-    vector<map<int, vector<Label>>> out_label;
-
     // index construction
-    priority_queue<Quad> Q;
-    unordered_map<int, vector<Edge>> P;
+    priority_queue<Triplet> Q;
 
-    // landmark index
+    // landmark index:
     vector<vector<vector<Label>>> index;
 
     Graph(string graph_file, string directed);
-    void sort_by_degree(vector<vector<Neighbor> > &g);
+    void sort_by_degree(vector<vector<Neighbor>> &g);
 
     // display
     void print_graph();
-    void print_r_graph();
-    void print_labels();
     void print_edge_list();
     void print_vertex_order();
     void print_index();
+    
+    // query 
+    int span_distance(int u, int v, int t);
 
     // index construction
+    void set_landmark(string input_file);
     void construct();
-    void construct_for_a_vertex(vector<vector<Neighbor> > &g, vector<map<int, vector<Label>>> &label, int u, bool reverse);
-    void add_label(vector<map<int, vector<Label>>> &label, int u, int v, int d, int t1, int t2);
+    void construct_for_a_vertex(int u);
+    void add_label(int u, int v, int d, int t);
 
-    // query
-    int span_distance(int u, int v, int t1, int t2);
-    int span_distance_landmark(int u, int v, int t1, int t2);
+    // tests
+    void test_correctness();
+    void calculate_landmark_size();
 
     // online
     int temporal_dijkstra(int u, int v, int t1, int t2);
     int min_distance(vector<int>&, vector<bool>&);
-
-    // tests
-    void test_correctness();
-    void calculate_index_size();
-    void calculate_landmark_size();
-    void test_landmark_correctness();
-
-    // landmark index
-    void set_landmark(string input_file);
-    void construct_landmark();
-    void construct_for_a_vertex_landmark(int u);
-    void add_label_landmark(int u, int v, int d, int t1, int t2);
 };
