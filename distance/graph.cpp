@@ -122,6 +122,7 @@ void Graph::set_landmark(string file) {
     if (file == "email_1") landmark = 50;
     if (file == "chess_2") landmark = 300;
     if (file == "slashdot_1") landmark = 1000;
+    if (file == "mathoverflow_1") landmark = 500;
 }
 
 int Graph::min_distance(vector<int>& dist, vector<bool>& visited) {
