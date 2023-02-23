@@ -37,6 +37,7 @@ Graph::Graph(string input_file, string _directed) {
         m++;
     }
     fin.close();
+    exit(0);
 
     // initialize adj_list, degree
     graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
