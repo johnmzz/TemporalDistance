@@ -118,7 +118,7 @@ void Graph::print_vertex_order() {
 void Graph::set_landmark(string file) {
     if (file == "graph") landmark = 6;
     if (file == "synthetic_100") landmark = 10;
-    if (file == "CollegeMsg_1") landmark = 100;
+    if (file == "CollegeMsg_1") landmark = 1;
     if (file == "email_1") landmark = 50;
     if (file == "chess_2") landmark = 300;
     if (file == "slashdot_1") landmark = 1000;
