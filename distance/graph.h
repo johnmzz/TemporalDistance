@@ -22,23 +22,23 @@ using namespace std;
 struct Edge {
     int u;
     int v;
-    int8_t d;
-    int16_t t;
-    Edge(int _u, int _v, int8_t _d, int16_t _t) : u(_u), v(_v), d(_d), t(_t) {};
+    int d;
+    int t;
+    Edge(int _u, int _v, int _d, int _t) : u(_u), v(_v), d(_d), t(_t) {};
 };
 
 struct Neighbor {
     int v;
-    int8_t d;
-    int16_t t;
-    Neighbor(int _v, int8_t _d, int16_t _t): v(_v), d(_d), t(_t) {};
+    int t;
+    int d;
+    Neighbor(int _v, int _d, int _t): v(_v), d(_d), t(_t) {};
 };
 
 // Index label entries
 struct Label {
-    int8_t d;
-    int16_t t;
-    Label(int8_t _d, int16_t _t): d(_d), t(_t) {};
+    int d;
+    int t;
+    Label(int _d, int _t): d(_d), t(_t) {};
 
     bool operator< (const Label &x) const {
         return d < x.d;
@@ -48,9 +48,9 @@ struct Label {
 // Triplet in priority queue Q
 struct Triplet {
     int v;
-    int8_t d;
-    int16_t t;
-    Triplet(int _v, int8_t _d, int16_t _t): v(_v), d(_d), t(_t) {};
+    int d;
+    int t;
+    Triplet(int _v, int _d, int _t): v(_v), d(_d), t(_t) {};
 
     bool operator< (const Triplet &x) const {   // order by smallest d, then latest t
         return (d > x.d) || (d == x.d && t < x.t) || (d == x.d && t == x.t && v > x.v);
@@ -69,7 +69,7 @@ class Graph{
 
     // graph
     vector<vector<Neighbor>> graph;
-    //vector<vector<Neighbor>> r_graph;
+    // vector<vector<Neighbor>> r_graph;
 
     // in-degree and out-degree
     vector<int> in_degree;
@@ -95,13 +95,13 @@ class Graph{
     void print_index();
     
     // query 
-    int span_distance(int u, int v, int16_t t);
+    int span_distance(int u, int v, int t);
 
     // index construction
     void set_landmark(string input_file);
     void construct();
     void construct_for_a_vertex(int u);
-    void add_label(int u, int v, int8_t d, int16_t t);
+    void add_label(int u, int v, int d, int t);
 
     // tests
     void test_correctness();

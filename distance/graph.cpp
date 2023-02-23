@@ -3,9 +3,9 @@
 Graph::Graph(string input_file, string _directed) {
     n = 0;
     m = 0;
-    d_min = INT8_MAX;
+    d_min = INT_MAX;
     d_max = 0;
-    t_min = INT16_MAX;
+    t_min = INT_MAX;
     t_max = 0;
 
     set_landmark(input_file);
@@ -26,16 +26,14 @@ Graph::Graph(string input_file, string _directed) {
         cout << "Cannot open " << input_file << ".txt" << endl;
         exit(0);
     }
-    int u, v;
-    int _d;
-    int _t;
-    while (fin >> u >> v >> _d >> _t) {
+    int u, v, d, t;
+    while (fin >> u >> v >> d >> t) {
         n = max(u,n);
         n = max(v,n);
-        d_min = min(_d, d_min);
-        d_max = max(_d, d_max);
-        t_min = min(_t, t_min);
-        t_max = max(_t, t_max);
+        d_min = min(d, d_min);
+        d_max = max(d, d_max);
+        t_min = min(t, t_min);
+        t_max = max(t, t_max);
         m++;
     }
     fin.close();
@@ -51,8 +49,6 @@ Graph::Graph(string input_file, string _directed) {
     order_ID = vector<int>(n+1);
 
     // read graph
-    int8_t d;
-    int16_t t;
     cout << "reading graph..." << endl;
     fin.open("./data/" + input_file + ".txt");
     while (fin >> u >> v >> d >> t) {
@@ -68,7 +64,7 @@ Graph::Graph(string input_file, string _directed) {
             out_degree[v]++;
         }
 
-        //edges.push_back(Edge(u, v, d, t));
+        // edges.push_back(Edge(u, v, d, t));
     }
     if (!directed) in_degree = out_degree;
     
@@ -80,7 +76,7 @@ Graph::Graph(string input_file, string _directed) {
 
 void Graph::sort_by_degree(vector<vector<Neighbor> > &g) {
     vector<pair<int, int>> v_degree_ordered(g.size());
-    for (int i = 1; i < g.size(); i++) {
+    for (uint32_t i = 1; i < g.size(); i++) {
         v_degree_ordered[i] = make_pair(i, (in_degree[i] + 1) * (out_degree[i] + 1));
     }
     std::sort(v_degree_ordered.begin(), v_degree_ordered.end(), [](auto &left, auto &right) {return left.second > right.second;});
@@ -165,12 +161,12 @@ int Graph::temporal_dijkstra(int s, int t, int t1, int t2) {
     return dist[t];
 }
 
-int Graph::span_distance(int u, int v, int16_t t) {
+int Graph::span_distance(int u, int v, int t) {
     if (u == v) return 0;
 
     for (auto label: index[u][v]) {
-        if (t <= label.t) {         // query(u, v, 2, 5), label = (u, v, 3, 5), then true
-            return label.d;         // query(u, v, 4, 5), label = (u, v, 3, 5), then false
+        if (t <= label.t) {
+            return label.d;
         }
     }
     return INT_MAX;
@@ -197,10 +193,10 @@ void Graph::construct() {
 }
 
 void Graph::construct_for_a_vertex(int u) {
-    // int i = 0;
+    //int i = 0;
     while (!Q.empty()) {
         Triplet trip = Q.top();
-        // cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
+        //cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
         Q.pop();
         int v = trip.v;
         if (u != v) {
@@ -209,22 +205,22 @@ void Graph::construct_for_a_vertex(int u) {
             }
             else {
                 add_label(u, v, trip.d, trip.t);
-                // cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
+                //cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
             }
         }
         for (Neighbor e : graph[v]) {
-            int16_t _t = (trip.t == -1 ? e.t : min(trip.t, e.t));
-            int8_t _d = trip.d + e.d;
+            int _t = (trip.t == -1 ? e.t : min(trip.t, e.t));
+            int _d = trip.d + e.d;
 
             Q.push(Triplet(e.v, _d, _t));
-            // cout << i << " push: (v=" << e.v << ", d=" << _d << ", t=" << _t << ")" << endl;
+            //cout << i << " push: (v=" << e.v << ", d=" << _d << ", t=" << _t << ")" << endl;
         }
-        // i++;
-        // cout << endl;
+        //i++;
+        //cout << endl;
     }
 }
 
-void Graph::add_label(int u, int v, int8_t d, int16_t t) {
+void Graph::add_label(int u, int v, int d, int t) {
     index[u][v].push_back(Label(d, t));
 }
 
@@ -254,7 +250,7 @@ void Graph::calculate_landmark_size() {
         }
     }
 
-    cout << "num_labels = " << num_label << ", size = num_labels * (8 + 16) = " << num_label * (sizeof(int8_t) + sizeof(int16_t)) << endl;
+    cout << "num_labels = " << num_label << ", size = num_labels * 2 * sizeof(int) = " << num_label * 2 * sizeof(int) << endl;
 }
 
 void Graph::test_correctness() {
