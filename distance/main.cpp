@@ -8,8 +8,6 @@ int main(int argc, char * argv[]) {
 
     Graph graph = Graph(input_graph, directed);
 
-    exit(0);
-
     // graph.print_graph();
 
     graph.construct();
