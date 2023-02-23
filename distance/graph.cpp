@@ -197,10 +197,10 @@ void Graph::construct() {
 }
 
 void Graph::construct_for_a_vertex(int u) {
-    //int i = 0;
+    // int i = 0;
     while (!Q.empty()) {
         Triplet trip = Q.top();
-        //cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
+        // cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
         Q.pop();
         int v = trip.v;
         if (u != v) {
@@ -209,18 +209,18 @@ void Graph::construct_for_a_vertex(int u) {
             }
             else {
                 add_label(u, v, trip.d, trip.t);
-                //cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
+                // cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
             }
         }
         for (Neighbor e : graph[v]) {
-            int8_t _t = (trip.t == -1 ? e.t : min(trip.t, e.t));
-            int16_t _d = trip.d + e.d;
+            int16_t _t = (trip.t == -1 ? e.t : min(trip.t, e.t));
+            int8_t _d = trip.d + e.d;
 
             Q.push(Triplet(e.v, _d, _t));
-            //cout << i << " push: (v=" << e.v << ", d=" << _d << ", t=" << _t << ")" << endl;
+            // cout << i << " push: (v=" << e.v << ", d=" << _d << ", t=" << _t << ")" << endl;
         }
-        //i++;
-        //cout << endl;
+        // i++;
+        // cout << endl;
     }
 }
 
