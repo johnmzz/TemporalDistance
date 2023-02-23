@@ -42,7 +42,7 @@ Graph::Graph(string input_file, string _directed) {
     graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
     out_degree = vector<int>(n+1);
     if (directed) {
-        // r_graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
+        r_graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
         in_degree = vector<int>(n+1);
     }
     ID_order = vector<int>(n+1);
@@ -56,7 +56,7 @@ Graph::Graph(string input_file, string _directed) {
         out_degree[u]++;
 
         if (directed) {
-            // r_graph[v].push_back(Neighbor(u, d, t));
+            r_graph[v].push_back(Neighbor(u, d, t));
             in_degree[v]++;
         }
         else {
@@ -64,7 +64,7 @@ Graph::Graph(string input_file, string _directed) {
             out_degree[v]++;
         }
 
-        // edges.push_back(Edge(u, v, d, t));
+        edges.push_back(Edge(u, v, d, t));
     }
     if (!directed) in_degree = out_degree;
     

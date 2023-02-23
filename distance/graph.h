@@ -69,7 +69,7 @@ class Graph{
 
     // graph
     vector<vector<Neighbor>> graph;
-    // vector<vector<Neighbor>> r_graph;
+    vector<vector<Neighbor>> r_graph;
 
     // in-degree and out-degree
     vector<int> in_degree;
