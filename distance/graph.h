@@ -66,10 +66,6 @@ class Graph{
     // directed or undirected
     bool directed;
 
-    // graph
-    vector<vector<Neighbor>> graph;
-    vector<vector<Neighbor>> r_graph;
-
     // graph (edge list)
     vector<Edge> edges;
     vector<int> graph_head;
@@ -77,10 +73,6 @@ class Graph{
     // degrees
     vector<int> d_in;
     vector<int> d_out;
-
-    // in-degree and out-degree
-    vector<int> in_degree;
-    vector<int> out_degree;
 
     // vertex ID <-> vertex order (based on degree)
     vector<int> ID_order;
@@ -93,14 +85,13 @@ class Graph{
     vector<vector<vector<Label>>> index;
 
     Graph(string graph_file, string directed);
-    void sort_by_degree(vector<vector<Neighbor>> &g);
+    void sort_by_degree();
 
     // graph construction
     void insert_edge(int u, int v, int d, int t);
     void insert(int u, int v, int d, int t, int m);
 
     // display
-    void print_graph();
     void print_edge_list();
     void print_vertex_order();
     void print_index();

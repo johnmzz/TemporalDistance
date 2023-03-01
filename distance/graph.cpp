@@ -36,11 +36,6 @@ Graph::Graph(string input_file, string _directed) {
     }
 
     // initialize adj_list, degree
-    graph = vector<vector<Neighbor> >(n+1, vector<Neighbor>());
-    out_degree = vector<int>(n+1);
-    if (directed) {
-        in_degree = vector<int>(n+1);
-    }
     ID_order = vector<int>(n+1);
     order_ID = vector<int>(n+1);
 
@@ -58,24 +53,12 @@ Graph::Graph(string input_file, string _directed) {
     }
     int u, v, d, t;
     while (fin >> u >> v >> d >> t) {
-        graph[u].push_back(Neighbor(v, d, t));
-        out_degree[u]++;
-
-        if (directed) {
-            in_degree[v]++;
-        }
-        else {
-            graph[v].push_back(Neighbor(u, d, t));
-            out_degree[v]++;
-        }
-
         d_out[u]++;
         if (directed) d_in[v]++;    // TODO: if undirected d_out[v]++;
         insert_edge(u, v, d, t);
     }
-    if (!directed) in_degree = out_degree;
     
-    sort_by_degree(graph);
+    sort_by_degree();
 
     index = vector<vector<vector<Label>>>(n+1, vector<vector<Label>>(n+1, vector<Label>()));
     cout << "Graph contructed, n = " << n << ", m = " << m << ", t_max = " << t_max << endl;
@@ -102,10 +85,10 @@ void Graph::insert_edge(int u, int v, int d, int t) {
     }
 }
 
-void Graph::sort_by_degree(vector<vector<Neighbor> > &g) {
-    vector<pair<int, int>> v_degree_ordered(g.size());
-    for (uint32_t i = 1; i < g.size(); i++) {
-        v_degree_ordered[i] = make_pair(i, (in_degree[i] + 1) * (out_degree[i] + 1));
+void Graph::sort_by_degree() {
+    vector<pair<int, int>> v_degree_ordered(n+1);
+    for (uint32_t i = 1; i <= n; i++) {
+        v_degree_ordered[i] = make_pair(i, (d_in[i] + 1) * (d_out[i] + 1));
     }
     std::sort(v_degree_ordered.begin(), v_degree_ordered.end(), [](auto &left, auto &right) {return left.second > right.second;});
 
@@ -113,16 +96,6 @@ void Graph::sort_by_degree(vector<vector<Neighbor> > &g) {
         auto v = v_degree_ordered[i];
         ID_order[v.first] = i+1;
         order_ID[i+1] = v.first;
-    }
-}
-
-void Graph::print_graph() {
-    for (int i = 0; i < graph.size(); i++) {
-        cout << i << ":[";
-        for (auto j : graph[i]) {
-            cout << "(" << j.v << "," << j.d << "," << j.t << "),";
-        }
-        cout << endl;
     }
 }
 
@@ -164,28 +137,28 @@ int Graph::min_distance(vector<int>& dist, vector<bool>& visited) {
     return idx;
 }
 
-int Graph::temporal_dijkstra(int s, int t, int t1, int t2) {
-    vector<int> dist = vector<int>(graph.size(), INT_MAX);
-    vector<bool> visited = vector<bool>(graph.size(), false);
+// int Graph::temporal_dijkstra(int s, int t, int t1, int t2) {
+//     vector<int> dist = vector<int>(graph.size(), INT_MAX);
+//     vector<bool> visited = vector<bool>(graph.size(), false);
 
-    dist[s] = 0;
+//     dist[s] = 0;
 
-    while (!visited[t]) {
-        int v = min_distance(dist, visited);
-        //cout << "this round v = " << v << endl;
+//     while (!visited[t]) {
+//         int v = min_distance(dist, visited);
+//         //cout << "this round v = " << v << endl;
         
-        if (v == INT_MAX) break;
+//         if (v == INT_MAX) break;
 
-        visited[v] = true;
-        for (auto e : graph[v]) {
-            if (!visited[e.v] && dist[v]+e.d < dist[e.v] && e.t >= t1 && e.t <= t2) {
-                dist[e.v] = dist[v] + e.d;
-            }
-        }
+//         visited[v] = true;
+//         for (auto e : graph[v]) {
+//             if (!visited[e.v] && dist[v]+e.d < dist[e.v] && e.t >= t1 && e.t <= t2) {
+//                 dist[e.v] = dist[v] + e.d;
+//             }
+//         }
 
-    }
-    return dist[t];
-}
+//     }
+//     return dist[t];
+// }
 
 int Graph::span_distance(int u, int v, int t) {
     if (u == v) return 0;
