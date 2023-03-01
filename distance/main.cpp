@@ -8,13 +8,11 @@ int main(int argc, char * argv[]) {
 
     Graph graph = Graph(input_graph, directed);
 
-    // graph.print_graph();
-
     graph.construct();
 
-    // graph.print_index();
+    graph.print_index();
 
-    graph.calculate_landmark_size();
+    // graph.calculate_landmark_size();
 
     // graph.test_correctness();
 }

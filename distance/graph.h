@@ -20,11 +20,12 @@
 using namespace std;
 
 struct Edge {
-    int u;
     int v;
     int d;
     int t;
-    Edge(int _u, int _v, int _d, int _t) : u(_u), v(_v), d(_d), t(_t) {};
+    int next;
+    int last;
+    Edge(int _v, int _d, int _t) : v(_v), d(_d), t(_t) {};
 };
 
 struct Neighbor {
@@ -59,17 +60,23 @@ struct Triplet {
 
 class Graph{
   public:
-    int n, m, t_min, t_max, d_min, d_max, landmark;
+    int max_v, max_e;
+    int n, m, t_max, landmark;
 
     // directed or undirected
     bool directed;
 
-    // edge list (ordered by time)
-    vector<Edge> edges;
-
     // graph
     vector<vector<Neighbor>> graph;
     vector<vector<Neighbor>> r_graph;
+
+    // graph (edge list)
+    vector<Edge> edges;
+    vector<int> graph_head;
+
+    // degrees
+    vector<int> d_in;
+    vector<int> d_out;
 
     // in-degree and out-degree
     vector<int> in_degree;
@@ -88,17 +95,22 @@ class Graph{
     Graph(string graph_file, string directed);
     void sort_by_degree(vector<vector<Neighbor>> &g);
 
+    // graph construction
+    void insert_edge(int u, int v, int d, int t);
+    void insert(int u, int v, int d, int t, int m);
+
     // display
     void print_graph();
     void print_edge_list();
     void print_vertex_order();
     void print_index();
+    void print_graph_head();
     
     // query 
     int span_distance(int u, int v, int t);
 
     // index construction
-    void set_landmark(string input_file);
+    void set_graph_detail(string input_file);
     void construct();
     void construct_for_a_vertex(int u);
     void add_label(int u, int v, int d, int t);
