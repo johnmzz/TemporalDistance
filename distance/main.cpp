@@ -10,7 +10,7 @@ int main(int argc, char * argv[]) {
 
     graph.construct();
 
-    graph.print_index();
+    // graph.print_index();
 
     // graph.calculate_landmark_size();
 
