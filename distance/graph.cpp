@@ -6,8 +6,11 @@ void Graph::set_graph_detail(string file) {
         t_max = 6;
         landmark = 12;
     }
-    if (file == "synthetic_100") landmark = 10;
-    if (file == "CollegeMsg_1") landmark = 100;
+    if (file == "CollegeMsg_1") {
+        n = 1899;
+        t_max = 194;
+        landmark = 100;
+    }
     if (file == "email_1") landmark = 1;
     if (file == "chess_2") landmark = 300;
     if (file == "slashdot_1") landmark = 1000;
@@ -216,10 +219,10 @@ void Graph::construct() {
 }
 
 void Graph::construct_for_a_vertex(int u) {
-    int i = 0;
+    //int i = 0;
     while (!Q.empty()) {
         Triplet trip = Q.top();
-        cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
+        //cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
         Q.pop();
         int v = trip.v;
         if (u != v) {
@@ -228,7 +231,7 @@ void Graph::construct_for_a_vertex(int u) {
             }
             else {
                 add_label(u, v, trip.d, trip.t);
-                cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
+                //cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
             }
         }
         // for (Neighbor e : graph[v]) {
@@ -243,10 +246,10 @@ void Graph::construct_for_a_vertex(int u) {
             int _d = trip.d + edges[j].d;
 
             Q.push(Triplet(edges[j].v, _d, _t));
-            cout << i << " push: (v=" << edges[j].v << ", d=" << _d << ", t=" << _t << ")" << endl;
+            //cout << i << " push: (v=" << edges[j].v << ", d=" << _d << ", t=" << _t << ")" << endl;
         }
-        i++;
-        cout << endl;
+        //i++;
+        //cout << endl;
     }
 }
 
