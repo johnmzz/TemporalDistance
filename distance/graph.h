@@ -58,10 +58,23 @@ struct Triplet {
     }
 };
 
+// Quadraplet for batch processing T
+struct Quad {
+    int u;
+    int v;
+    int d;
+    int t;
+    Quad(int _u, int _v, int _d, int _t): u(_u), v(_v), d(_d), t(_t) {};
+
+    bool operator< (const Quad &x) const {   // order by smallest d, then latest t
+        return (d > x.d) || (d == x.d && t < x.t) || (d == x.d && t == x.t && u > x.u) || (d == x.d && t == x.t && u == x.u && v > x.v);
+    }
+};
+
 class Graph{
   public:
     int max_v, max_e;
-    int n, m, t_max, landmark;
+    int n, m, t_max, landmark, window;
 
     // directed or undirected
     bool directed;
@@ -81,6 +94,9 @@ class Graph{
     // index construction
     priority_queue<Triplet> Q;
 
+    // batch label insert
+    priority_queue<Quad> T;
+
     // landmark index:
     vector<vector<vector<Label>>> index;
 
@@ -96,6 +112,7 @@ class Graph{
     void print_vertex_order();
     void print_index();
     void print_graph_head();
+    void print_T();
     
     // query 
     int span_distance(int u, int v, int t);
@@ -105,6 +122,12 @@ class Graph{
     void construct();
     void construct_for_a_vertex(int u);
     void add_label(int u, int v, int d, int t);
+
+    // dynamic graph
+    void insert_stream(string graph_file);
+    void construct_for_a_vertex_stream(int u);
+    void check_dominate(int u, int v, int d, int t);
+    void add_label_update(int u, int v, int d, int t);
 
     // tests
     void test_correctness();

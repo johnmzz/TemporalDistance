@@ -3,19 +3,50 @@
 void Graph::set_graph_detail(string file) {
     if (file == "graph") {
         n = 12;
-        t_max = 6;
+        t_max = 5;
+        landmark = 12;
+    }
+    if (file == "graph_p1") {
+        n = 12;
+        t_max = 5;
         landmark = 12;
     }
     if (file == "CollegeMsg_1") {
         n = 1899;
         t_max = 194;
+        window = 100;
         landmark = 100;
     }
-    if (file == "email_1") landmark = 1;
-    if (file == "chess_2") landmark = 300;
-    if (file == "slashdot_1") landmark = 1000;
-    if (file == "mathoverflow_10days") landmark = 1;
-    if (file == "mathoverflow_1month") landmark = 1;
+    if (file == "CollegeMsg_10") {
+        n = 1899;
+        t_max = 194;
+        window = 100;
+        landmark = 100;
+    }
+    if (file == "CollegeMsg_10_p1") {
+        n = 1899;
+        t_max = 194;
+        window = 100;
+        landmark = 100;
+    }
+    if (file == "CollegeMsg_100") {
+        n = 1899;
+        t_max = 194;
+        window = 100;
+        landmark = 100;
+    }
+    if (file == "mathoverflow_10") {
+        n = 24818;
+        t_max = 2351;
+        window = 100;
+        landmark = 1;
+    }
+    if (file == "mathoverflow_10_p1") {
+        n = 24818;
+        t_max = 2351;
+        window = 100;
+        landmark = 1;
+    }
 }
 
 Graph::Graph(string input_file, string _directed) {
@@ -99,6 +130,96 @@ void Graph::sort_by_degree() {
     }
 }
 
+void Graph::insert_stream(string input_file) {
+    cout << "reading new edges..." << endl;
+    ifstream fin("./data/" + input_file + ".txt");
+    if (!fin) {
+        cout << "Cannot open " << input_file << ".txt" << endl;
+        exit(0);
+    }
+
+    int w, v, d, t;
+    while (fin >> w >> v >> d >> t) {
+        d_out[w]++;
+        if (directed) d_in[v]++;    // TODO: if undirected d_out[v]++;
+        insert_edge(w, v, d, t);
+
+        for (int i = 1; i <= landmark; i++) {
+            int u = order_ID[i];
+            if (u == w) {
+                T.push(Quad(u, v, d, t));
+            }
+            else {
+                for (auto label : index[u][w]) {
+                    T.push(Quad(u, v, label.d + d, label.t));
+                }
+            }
+        }
+    }
+
+    while (!T.empty()) {
+        Quad quad = T.top();
+        T.pop();
+
+        Q.push(Triplet(quad.v, quad.d, quad.t));
+        construct_for_a_vertex_stream(quad.u);
+    }
+}
+
+void Graph::construct_for_a_vertex_stream(int u) {
+    //int i = 0;
+    while (!Q.empty()) {
+        Triplet trip = Q.top();
+        //cout << i << " pop: (v=" << trip.v << ", d=" << trip.d << ", t=" << trip.t << ")" << endl;
+        Q.pop();
+        int v = trip.v;
+        if (u != v) {
+            if (span_distance(u, v, trip.t) <= trip.d) {
+                continue;
+            }
+            else {
+                //cout << "insert (u = " << u << ", v = " << v << ", d = " << trip.d << ", ts = " << trip.t << ")" << endl;
+                check_dominate(u, v, trip.d, trip.t);
+                add_label_update(u, v, trip.d, trip.t);
+                //cout << i << " add label: Index[" << u << "][" << v <<  "] += (" << trip.d << "," << trip.t << ")" << endl; 
+            }
+        }
+        // for (Neighbor e : graph[v]) {
+        //     int _t = (trip.t == -1 ? e.t : min(trip.t, e.t));
+        //     int _d = trip.d + e.d;
+
+        //     Q.push(Triplet(e.v, _d, _t));
+        //     //cout << i << " push: (v=" << e.v << ", d=" << _d << ", t=" << _t << ")" << endl;
+        // }
+        for (int j = graph_head[v]; j; j = edges[j].next) {
+            int _t = (trip.t == -1 ? edges[j].t : min(trip.t, edges[j].t));
+            int _d = trip.d + edges[j].d;
+
+            Q.push(Triplet(edges[j].v, _d, _t));
+            //cout << i << " push: (v=" << edges[j].v << ", d=" << _d << ", t=" << _t << ")" << endl;
+        }
+        //i++;
+        //cout << endl;
+    }
+}
+
+void Graph::add_label_update(int u, int v, int d, int t) {
+	Label label = Label(d, t);
+	vector<Label>::iterator it = upper_bound(index[u][v].begin(), index[u][v].end(), label);
+	index[u][v].insert(it, label);
+}
+
+void Graph::check_dominate(int u, int v, int d, int t) {
+
+    for (int i = 0; i < index[u][v].size(); i++) {
+        Label label = index[u][v][i];
+        if (t >= label.t && d <= label.d) {
+            index[u][v].erase(index[u][v].begin() + i);
+            i--;
+        }
+    }
+}
+
 void Graph::print_graph_head() {
     for (int i = 0; i <= n; i++) {
         cout << i << ": " << graph_head[i] << endl;
@@ -137,28 +258,34 @@ int Graph::min_distance(vector<int>& dist, vector<bool>& visited) {
     return idx;
 }
 
-// int Graph::temporal_dijkstra(int s, int t, int t1, int t2) {
-//     vector<int> dist = vector<int>(graph.size(), INT_MAX);
-//     vector<bool> visited = vector<bool>(graph.size(), false);
+int Graph::temporal_dijkstra(int s, int t, int t1, int t2) {
+    vector<int> dist = vector<int>(n+1, INT_MAX);
+    vector<bool> visited = vector<bool>(n+1, false);
 
-//     dist[s] = 0;
+    dist[s] = 0;
 
-//     while (!visited[t]) {
-//         int v = min_distance(dist, visited);
-//         //cout << "this round v = " << v << endl;
+    while (!visited[t]) {
+        int v = min_distance(dist, visited);
+        //cout << "this round v = " << v << endl;
         
-//         if (v == INT_MAX) break;
+        if (v == INT_MAX) break;
 
-//         visited[v] = true;
-//         for (auto e : graph[v]) {
-//             if (!visited[e.v] && dist[v]+e.d < dist[e.v] && e.t >= t1 && e.t <= t2) {
-//                 dist[e.v] = dist[v] + e.d;
-//             }
-//         }
+        visited[v] = true;
+        // for (auto e : graph[v]) {
+        //     if (!visited[e.v] && dist[v]+e.d < dist[e.v] && e.t >= t1 && e.t <= t2) {
+        //         dist[e.v] = dist[v] + e.d;
+        //     }
+        // }
+        for (int j = graph_head[v]; j; j = edges[j].next) { 
+            Edge e = edges[j];
+            if (!visited[e.v] && dist[v]+e.d < dist[e.v] && e.t >= t1 && e.t <= t2) {
+                dist[e.v] = dist[v] + e.d;
+            }
+        }
 
-//     }
-//     return dist[t];
-// }
+    }
+    return dist[t];
+}
 
 int Graph::span_distance(int u, int v, int t) {
     if (u == v) return 0;
@@ -237,11 +364,20 @@ void Graph::print_index() {
         for (int j = 1; j < index[i].size(); j++) {
             cout << j << ":[";
             for (auto label: index[i][j]) {
-                cout << "(" << label.d << "," << label.t << "),";
+                cout << "(d=" << label.d << ",ts=" << label.t << "),";
             }
             cout << "], ";
         }
         cout << "}" << endl;
+    }
+}
+
+void Graph::print_T() {
+    cout << "T:" << endl;
+    while (!T.empty()) {
+        Quad quad = T.top();
+        T.pop();
+        cout << "(u = " << quad.u << ", v = " << quad.v << ", d = " << quad.d << ", ts = " << quad.t << "), " << endl;
     }
 }
 
@@ -259,21 +395,22 @@ void Graph::calculate_landmark_size() {
     cout << "num_labels = " << num_label << ", size = num_labels * 2 * sizeof(int) = " << num_label * 2 * sizeof(int) << endl;
 }
 
-// void Graph::test_correctness() {
-//     cout << "testing corrrectness..." << endl;
-//     for (int i = 1; i <= landmark; i++) {
-//         for (int j = 1; j <= landmark; j++) {
-//             for (int ts = t_min; ts <= t_max; ts++) {
-//                 int u = order_ID[i];
-//                 int v = order_ID[j];
-//                 int te = t_max;
-//                 int query = span_distance(u,v,ts);
-//                 int online = temporal_dijkstra(u,v,ts,te);
-//                 if (query != online) {
-//                     cout << "u = " << u << ", v = " << v << ",ts = " << ts << ", te = " << te
-//                     << ", Incorrect query = " << query << ", online = " << online << endl;
-//                 }
-//             }
-//         }
-//     }
-// }
+void Graph::test_correctness() {
+    cout << "testing corrrectness..." << endl;
+    for (int i = 1; i <= landmark; i++) {
+        for (int j = 1; j <= landmark; j++) {
+            for (int ts = 1; ts <= t_max; ts++) {
+                cout << "testing i = " << i << ", j = " << j << ", ts = " << ts << endl;
+                int u = order_ID[i];
+                int v = order_ID[j];
+                int te = t_max;
+                int query = span_distance(u,v,ts);
+                int online = temporal_dijkstra(u,v,ts,te);
+                if (query != online) {
+                    cout << "u = " << u << ", v = " << v << ",ts = " << ts << ", te = " << te
+                    << ", Incorrect query = " << query << ", online = " << online << endl;
+                }
+            }
+        }
+    }
+}
