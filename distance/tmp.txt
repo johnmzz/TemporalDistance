@@ -1,29 +1,205 @@
-T:
-(u = 3, v = 4, d = 2, ts = 5), 
-(u = 5, v = 4, d = 3, ts = 4), 
-(u = 12, v = 10, d = 4, ts = 5), 
-(u = 4, v = 4, d = 4, ts = 4), 
-(u = 2, v = 1, d = 5, ts = 5), 
-(u = 2, v = 4, d = 5, ts = 3), 
-(u = 1, v = 5, d = 6, ts = 5), 
-(u = 1, v = 1, d = 6, ts = 2), 
-(u = 1, v = 4, d = 6, ts = 2), 
-(u = 2, v = 6, d = 7, ts = 5), 
-(u = 9, v = 3, d = 8, ts = 5), 
-(u = 11, v = 5, d = 8, ts = 3), 
-(u = 1, v = 6, d = 8, ts = 2), 
-(u = 11, v = 1, d = 8, ts = 2), 
-(u = 11, v = 4, d = 8, ts = 2), 
-(u = 8, v = 4, d = 9, ts = 5), 
-(u = 11, v = 6, d = 10, ts = 2), 
-(u = 3, v = 3, d = 10, ts = 1), 
-(u = 5, v = 4, d = 11, ts = 4), 
-(u = 5, v = 3, d = 11, ts = 1), 
-(u = 4, v = 3, d = 12, ts = 1), 
-(u = 2, v = 4, d = 13, ts = 3), 
-(u = 2, v = 3, d = 13, ts = 1), 
-(u = 1, v = 4, d = 14, ts = 2), 
-(u = 1, v = 3, d = 14, ts = 1), 
-(u = 7, v = 3, d = 15, ts = 3), 
-(u = 11, v = 4, d = 16, ts = 2), 
-(u = 11, v = 3, d = 16, ts = 1), 
+reading graph...
+Graph contructed, n = 1899, m = 53485, t_max = 194
+construct for vertex u = 323, order i = 1
+, time taken = 3.43481
+construct for vertex u = 103, order i = 2
+, time taken = 1.08698
+construct for vertex u = 372, order i = 3
+, time taken = 1.22494
+construct for vertex u = 32, order i = 4
+, time taken = 1.0228
+construct for vertex u = 605, order i = 5
+, time taken = 0.743322
+construct for vertex u = 679, order i = 6
+, time taken = 0.801292
+construct for vertex u = 617, order i = 7
+, time taken = 0.705568
+construct for vertex u = 249, order i = 8
+, time taken = 0.740419
+construct for vertex u = 277, order i = 9
+, time taken = 1.10889
+construct for vertex u = 9, order i = 10
+, time taken = 0.590294
+construct for vertex u = 12, order i = 11
+, time taken = 0.5066
+construct for vertex u = 400, order i = 12
+, time taken = 0.869095
+construct for vertex u = 41, order i = 13
+, time taken = 0.592738
+construct for vertex u = 638, order i = 14
+, time taken = 0.711971
+construct for vertex u = 176, order i = 15
+, time taken = 0.564301
+construct for vertex u = 454, order i = 16
+, time taken = 0.860983
+construct for vertex u = 42, order i = 17
+, time taken = 0.755276
+construct for vertex u = 1713, order i = 18
+, time taken = 0.382668
+construct for vertex u = 297, order i = 19
+, time taken = 0.877047
+construct for vertex u = 254, order i = 20
+, time taken = 0.748527
+construct for vertex u = 713, order i = 21
+, time taken = 0.635914
+construct for vertex u = 495, order i = 22
+, time taken = 0.50359
+construct for vertex u = 194, order i = 23
+, time taken = 0.723628
+construct for vertex u = 1189, order i = 24
+, time taken = 0.475627
+construct for vertex u = 128, order i = 25
+, time taken = 0.603348
+construct for vertex u = 72, order i = 26
+, time taken = 0.448517
+construct for vertex u = 1281, order i = 27
+, time taken = 0.745642
+construct for vertex u = 475, order i = 28
+, time taken = 0.576187
+construct for vertex u = 704, order i = 29
+, time taken = 0.293824
+construct for vertex u = 542, order i = 30
+, time taken = 0.687919
+construct for vertex u = 598, order i = 31
+, time taken = 0.707946
+construct for vertex u = 281, order i = 32
+, time taken = 0.676577
+construct for vertex u = 105, order i = 33
+, time taken = 0.665725
+construct for vertex u = 325, order i = 34
+, time taken = 0.502488
+construct for vertex u = 63, order i = 35
+, time taken = 0.526457
+construct for vertex u = 308, order i = 36
+, time taken = 0.56929
+construct for vertex u = 389, order i = 37
+, time taken = 0.505039
+construct for vertex u = 48, order i = 38
+, time taken = 0.581575
+construct for vertex u = 212, order i = 39
+, time taken = 0.416837
+construct for vertex u = 569, order i = 40
+, time taken = 0.366021
+construct for vertex u = 823, order i = 41
+, time taken = 0.693331
+construct for vertex u = 536, order i = 42
+, time taken = 0.550208
+construct for vertex u = 1255, order i = 43
+, time taken = 0.49525
+construct for vertex u = 474, order i = 44
+, time taken = 0.353918
+construct for vertex u = 626, order i = 45
+, time taken = 0.519999
+construct for vertex u = 498, order i = 46
+, time taken = 0.218862
+construct for vertex u = 783, order i = 47
+, time taken = 0.474709
+construct for vertex u = 1283, order i = 48
+, time taken = 0.327033
+construct for vertex u = 97, order i = 49
+, time taken = 0.467583
+construct for vertex u = 1339, order i = 50
+, time taken = 0.396015
+construct for vertex u = 398, order i = 51
+, time taken = 0.46864
+construct for vertex u = 1402, order i = 52
+, time taken = 0.302641
+construct for vertex u = 27, order i = 53
+, time taken = 0.304156
+construct for vertex u = 193, order i = 54
+, time taken = 0.409715
+construct for vertex u = 263, order i = 55
+, time taken = 0.568583
+construct for vertex u = 341, order i = 56
+, time taken = 0.539788
+construct for vertex u = 68, order i = 57
+, time taken = 0.463473
+construct for vertex u = 753, order i = 58
+, time taken = 0.323058
+construct for vertex u = 834, order i = 59
+, time taken = 0.277959
+construct for vertex u = 144, order i = 60
+, time taken = 0.308901
+construct for vertex u = 1113, order i = 61
+, time taken = 0.356327
+construct for vertex u = 502, order i = 62
+, time taken = 0.312655
+construct for vertex u = 711, order i = 63
+, time taken = 0.405432
+construct for vertex u = 770, order i = 64
+, time taken = 0.306766
+construct for vertex u = 950, order i = 65
+, time taken = 0.557906
+construct for vertex u = 67, order i = 66
+, time taken = 0.376639
+construct for vertex u = 317, order i = 67
+, time taken = 0.352063
+construct for vertex u = 482, order i = 68
+, time taken = 0.323088
+construct for vertex u = 321, order i = 69
+, time taken = 0.452515
+construct for vertex u = 758, order i = 70
+, time taken = 0.449991
+construct for vertex u = 557, order i = 71
+, time taken = 0.375625
+construct for vertex u = 683, order i = 72
+, time taken = 0.321954
+construct for vertex u = 525, order i = 73
+, time taken = 0.341538
+construct for vertex u = 95, order i = 74
+, time taken = 0.325279
+construct for vertex u = 357, order i = 75
+, time taken = 0.218188
+construct for vertex u = 1236, order i = 76
+, time taken = 0.297604
+construct for vertex u = 431, order i = 77
+, time taken = 0.246092
+construct for vertex u = 6, order i = 78
+, time taken = 0.327323
+construct for vertex u = 1312, order i = 79
+, time taken = 0.288829
+construct for vertex u = 392, order i = 80
+, time taken = 0.386066
+construct for vertex u = 644, order i = 81
+, time taken = 0.497132
+construct for vertex u = 51, order i = 82
+, time taken = 0.221084
+construct for vertex u = 712, order i = 83
+, time taken = 0.312971
+construct for vertex u = 462, order i = 84
+, time taken = 0.369364
+construct for vertex u = 654, order i = 85
+, time taken = 0.3806
+construct for vertex u = 250, order i = 86
+, time taken = 0.288905
+construct for vertex u = 840, order i = 87
+, time taken = 0.390214
+construct for vertex u = 378, order i = 88
+, time taken = 0.302032
+construct for vertex u = 652, order i = 89
+, time taken = 0.352216
+construct for vertex u = 3, order i = 90
+, time taken = 0.236655
+construct for vertex u = 586, order i = 91
+, time taken = 0.269915
+construct for vertex u = 252, order i = 92
+, time taken = 0.217191
+construct for vertex u = 725, order i = 93
+, time taken = 0.388568
+construct for vertex u = 316, order i = 94
+, time taken = 0.332693
+construct for vertex u = 1313, order i = 95
+, time taken = 0.250024
+construct for vertex u = 1346, order i = 96
+, time taken = 0.243209
+construct for vertex u = 1158, order i = 97
+, time taken = 0.230152
+construct for vertex u = 509, order i = 98
+, time taken = 0.295104
+construct for vertex u = 396, order i = 99
+, time taken = 0.181247
+construct for vertex u = 697, order i = 100
+, time taken = 0.236205
+build index: 51.0234 s
+reading new edges...
+num_labels = 727471, size = num_labels * 2 * sizeof(int) = 5819768

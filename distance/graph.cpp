@@ -157,6 +157,8 @@ void Graph::insert_stream(string input_file) {
         }
     }
 
+    clock_t start, end;
+    start = clock();
     while (!T.empty()) {
         Quad quad = T.top();
         T.pop();
@@ -164,6 +166,8 @@ void Graph::insert_stream(string input_file) {
         Q.push(Triplet(quad.v, quad.d, quad.t));
         construct_for_a_vertex_stream(quad.u);
     }
+    end = clock();
+    cout << "insert stream: " << (float)(end - start) / CLOCKS_PER_SEC << " s" << endl;
 }
 
 void Graph::construct_for_a_vertex_stream(int u) {
