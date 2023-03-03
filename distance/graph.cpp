@@ -37,7 +37,7 @@ void Graph::set_graph_detail(string file) {
     }
     if (file == "mathoverflow_10") {
         n = 24818;
-        t_max = 2351;
+        t_max = 101;
         window = 100;
         landmark = 1;
     }
